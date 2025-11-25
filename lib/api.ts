@@ -82,7 +82,7 @@ export interface ApiError {
     error: string;
 }
 
-const BASE_URL = "http://82.29.169.187:8093/api/v1";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 async function handleResponse<T>(response: Response): Promise<T> {
     if (!response.ok) {
