@@ -1,17 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Trash2, Upload } from "lucide-react";
-import { CreateReportPayload, ReportContentBlock } from "@/lib/api";
+import { Trash2, Plus } from "lucide-react";
+import { CreateReportPayload, ReportContentBlock, ReportAttachment } from "@/lib/api";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Select";
 import { Geist_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 const geistMono = Geist_Mono({ subsets: ["latin"] });
 
 interface ReportFormProps {
-    onSubmit: (data: FormData) => Promise<void>;
+    onSubmit: (data: CreateReportPayload) => Promise<void>;
     initialData?: CreateReportPayload;
     onCancel?: () => void;
 }
@@ -27,23 +28,36 @@ export function ReportForm({ onSubmit, initialData = defaultData, onCancel }: Re
     const [formData, setFormData] = useState<CreateReportPayload>(initialData);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const [newContentText, setNewContentText] = useState("");
+    const [newAttachment, setNewAttachment] = useState({
+        type: "document" as ReportAttachment["type"],
+        name: "",
+        url: "",
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-        if (files) {
-            setUploadedFiles((prev) => [...prev, ...Array.from(files)]);
+    const addAttachment = () => {
+        if (!newAttachment.name || !newAttachment.url) {
+            setError("Attachment name and URL are required");
+            return;
         }
+        setFormData((prev) => ({
+            ...prev,
+            attachments: [...(prev.attachments || []), { ...newAttachment }],
+        }));
+        setNewAttachment({ type: "document", name: "", url: "" });
+        setError(null);
     };
 
-    const removeFile = (index: number) => {
-        setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
+    const removeAttachment = (index: number) => {
+        setFormData((prev) => ({
+            ...prev,
+            attachments: prev.attachments?.filter((_, i) => i !== index),
+        }));
     };
 
     const addContentBlock = () => {
@@ -72,16 +86,7 @@ export function ReportForm({ onSubmit, initialData = defaultData, onCancel }: Re
         setError(null);
         setIsSubmitting(true);
         try {
-            const formDataToSend = new FormData();
-            formDataToSend.append("title", formData.title);
-            formDataToSend.append("body", formData.body || "");
-            formDataToSend.append("content", JSON.stringify(formData.content || []));
-
-            uploadedFiles.forEach((file) => {
-                formDataToSend.append("attachments", file);
-            });
-
-            await onSubmit(formDataToSend);
+            await onSubmit(formData);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to create report");
         } finally {
@@ -144,7 +149,7 @@ export function ReportForm({ onSubmit, initialData = defaultData, onCancel }: Re
                         className="flex-1 bg-black border-gray-800 text-white placeholder:text-gray-700"
                     />
                     <Button type="button" variant="secondary" onClick={addContentBlock} className="bg-white text-black hover:bg-gray-200">
-                        Add Text
+                        Add Task
                     </Button>
                 </div>
             </div>
@@ -153,17 +158,20 @@ export function ReportForm({ onSubmit, initialData = defaultData, onCancel }: Re
             <div className="space-y-2 border-t border-gray-800 pt-4">
                 <h3 className={cn("text-xs uppercase tracking-widest text-gray-500 mb-2", geistMono.className)}>Attachments</h3>
                 <div className="space-y-2">
-                    {uploadedFiles.map((file, index) => (
+                    {formData.attachments?.map((attachment, index) => (
                         <div key={index} className="flex items-center justify-between bg-gray-900/50 border border-gray-800 p-2 rounded text-sm">
                             <div className="flex flex-col flex-1 min-w-0">
-                                <span className="font-medium text-gray-300 truncate">{file.name}</span>
-                                <span className="text-xs text-gray-500">{(file.size / 1024).toFixed(2)} KB</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-500 uppercase">{attachment.type}</span>
+                                    <span className="font-medium text-gray-300 truncate">{attachment.name}</span>
+                                </div>
+                                <span className="text-xs text-gray-500 truncate">{attachment.url}</span>
                             </div>
                             <Button
                                 type="button"
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => removeFile(index)}
+                                onClick={() => removeAttachment(index)}
                                 className="text-red-500 hover:text-red-400 h-6 w-6 p-0 hover:bg-transparent"
                             >
                                 <Trash2 className="h-4 w-4" />
@@ -171,21 +179,50 @@ export function ReportForm({ onSubmit, initialData = defaultData, onCancel }: Re
                         </div>
                     ))}
                 </div>
-                <div className="relative">
-                    <input
-                        type="file"
-                        multiple
-                        onChange={handleFileChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                        id="file-upload"
-                    />
+                <div className="space-y-2 p-3 border border-gray-800 rounded-md bg-gray-900/20">
+                    <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                            <label className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}>Type</label>
+                            <Select
+                                value={newAttachment.type}
+                                onChange={(e) => setNewAttachment({ ...newAttachment, type: e.target.value as ReportAttachment["type"] })}
+                                options={[
+                                    { label: "Document", value: "document" },
+                                    { label: "Image", value: "image" },
+                                    { label: "Video", value: "video" },
+                                    { label: "Link", value: "link" },
+                                    { label: "Attachment", value: "attachment" },
+                                ]}
+                                className="bg-black border-gray-800 text-white text-sm"
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}>Name</label>
+                            <Input
+                                value={newAttachment.name}
+                                onChange={(e) => setNewAttachment({ ...newAttachment, name: e.target.value })}
+                                placeholder="Chart Q4"
+                                className="bg-black border-gray-800 text-white placeholder:text-gray-700 text-sm"
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-1">
+                        <label className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}>URL</label>
+                        <Input
+                            value={newAttachment.url}
+                            onChange={(e) => setNewAttachment({ ...newAttachment, url: e.target.value })}
+                            placeholder="https://example.com/file.pdf"
+                            className="bg-black border-gray-800 text-white placeholder:text-gray-700 text-sm"
+                        />
+                    </div>
                     <Button
                         type="button"
                         variant="secondary"
+                        onClick={addAttachment}
                         className="w-full bg-white text-black hover:bg-gray-200"
                     >
-                        <Upload className="mr-2 h-4 w-4" />
-                        Upload Files
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add Attachment
                     </Button>
                 </div>
             </div>

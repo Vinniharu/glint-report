@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-import { api, Report } from "@/lib/api";
+import { api, Report, DgmDecisionPayload, CreateReportPayload, UserRole } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { ReportList } from "../_components/ReportList";
 import { CreateReportModal } from "../_components/CreateReportModal";
 import { ViewReportModal } from "../_components/ViewReportModal";
+import { UpdateReportStatusModal } from "../_components/UpdateReportStatusModal";
 import { Geist_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +19,8 @@ export default function ReportsPage() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [selectedReport, setSelectedReport] = useState<Report | null>(null);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-    const [userRole, setUserRole] = useState<string | null>(null);
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+    const [userRole, setUserRole] = useState<UserRole | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
 
     const fetchReports = async () => {
@@ -26,22 +28,23 @@ export default function ReportsPage() {
             setIsLoading(true);
             const data = await api.reports.list();
 
-            // Handle null or undefined response
             if (!data || !Array.isArray(data)) {
                 setReports([]);
                 return;
             }
 
-            // Filter reports based on user role
-            if (userRole === "admin") {
-                // Admin sees all reports
-                setReports(data);
-            } else if (userId) {
-                // Developer sees only their own reports
-                const filteredReports = data.filter(report => report.developer_id === userId);
+            if (userRole === "general_manager") {
+                const filteredReports = data.filter(report => report.status === "dgm_approved" || report.status === "gm_approved");
                 setReports(filteredReports);
+            } else if (userRole === "developer") {
+                if (userId) {
+                    const filteredReports = data.filter(report => report.developer_id === userId);
+                    setReports(filteredReports);
+                } else {
+                    setReports([]);
+                }
             } else {
-                setReports([]);
+                setReports(data);
             }
         } catch (error) {
             console.error("Failed to fetch reports:", error);
@@ -57,7 +60,7 @@ export default function ReportsPage() {
                 const token = sessionStorage.getItem("token");
                 if (token) {
                     const userData = await api.auth.me(token);
-                    setUserRole(userData.role as string);
+                    setUserRole(userData.role as UserRole);
                     setUserId(userData.id as string);
                 }
             } catch (error) {
@@ -73,7 +76,7 @@ export default function ReportsPage() {
         }
     }, [userRole, userId]);
 
-    const handleCreateReport = async (data: FormData) => {
+    const handleCreateReport = async (data: CreateReportPayload) => {
         await api.reports.create(data);
         await fetchReports(); // Refresh list
     };
@@ -81,6 +84,20 @@ export default function ReportsPage() {
     const handleViewReport = (report: Report) => {
         setSelectedReport(report);
         setIsViewModalOpen(true);
+    };
+
+    const handleStatusUpdate = (report: Report) => {
+        setSelectedReport(report);
+        setIsStatusModalOpen(true);
+    };
+
+    const handleSubmitStatusUpdate = async (reportId: string, data: DgmDecisionPayload, isGM: boolean) => {
+        if (isGM) {
+            await api.reports.gmDecision(reportId, data);
+        } else {
+            await api.reports.dgmDecision(reportId, data);
+        }
+        await fetchReports(); // Refresh list
     };
 
     return (
@@ -107,6 +124,8 @@ export default function ReportsPage() {
                 reports={reports}
                 isLoading={isLoading}
                 onView={handleViewReport}
+                onStatusUpdate={handleStatusUpdate}
+                userRole={userRole}
             />
 
             <CreateReportModal
@@ -119,6 +138,14 @@ export default function ReportsPage() {
                 isOpen={isViewModalOpen}
                 onClose={() => setIsViewModalOpen(false)}
                 report={selectedReport}
+            />
+
+            <UpdateReportStatusModal
+                isOpen={isStatusModalOpen}
+                onClose={() => setIsStatusModalOpen(false)}
+                report={selectedReport}
+                onSubmit={handleSubmitStatusUpdate}
+                userRole={userRole}
             />
         </div>
     );

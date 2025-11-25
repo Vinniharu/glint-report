@@ -14,7 +14,7 @@ export default function DashboardPage() {
         const fetchStats = async () => {
             try {
                 const reports = await api.reports.list();
-                setReportCount(reports.length);
+                setReportCount(reports?.length ?? 0);
             } catch (error) {
                 console.error("Failed to fetch stats:", error);
                 setReportCount(0);

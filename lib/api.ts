@@ -78,6 +78,11 @@ export interface Report {
     updated_at: string;
 }
 
+export interface DgmDecisionPayload {
+    action: "approve" | "request_changes" | "needs_revision";
+    comment?: string;
+}
+
 export interface ApiError {
     error: string;
 }
@@ -172,17 +177,41 @@ export const api = {
             });
             return handleResponse<Report[]>(response);
         },
-        create: async (data: FormData): Promise<Report> => {
+        create: async (data: CreateReportPayload): Promise<Report> => {
             const token = sessionStorage.getItem("token");
             const response = await fetch(`${BASE_URL}/reports`, {
                 method: "POST",
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
-                    // Don't set Content-Type - browser will set it with boundary for FormData
                 },
-                body: data,
+                body: JSON.stringify(data),
             });
             return handleResponse<Report>(response);
+        },
+        dgmDecision: async (reportId: string, data: DgmDecisionPayload): Promise<void> => {
+            const token = sessionStorage.getItem("token");
+            const response = await fetch(`${BASE_URL}/reports/${reportId}/dgm/decision`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(data),
+            });
+            return handleResponse<void>(response);
+        },
+        gmDecision: async (reportId: string, data: DgmDecisionPayload): Promise<void> => {
+            const token = sessionStorage.getItem("token");
+            const response = await fetch(`${BASE_URL}/reports/${reportId}/gm/decision`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(data),
+            });
+            return handleResponse<void>(response);
         },
     },
 };

@@ -15,7 +15,7 @@ export default function ProfilePage() {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const token = localStorage.getItem("token");
+                const token = sessionStorage.getItem("token");
                 if (!token) return;
                 const data = await api.auth.me(token);
                 setUser(data);

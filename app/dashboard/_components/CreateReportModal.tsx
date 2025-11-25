@@ -1,10 +1,13 @@
+"use client";
+
 import { Modal } from "@/components/ui/Modal";
 import { ReportForm } from "./ReportForm";
+import { CreateReportPayload } from "@/lib/api";
 
 interface CreateReportModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: FormData) => Promise<void>;
+    onSubmit: (data: CreateReportPayload) => Promise<void>;
 }
 
 export function CreateReportModal({
@@ -12,7 +15,7 @@ export function CreateReportModal({
     onClose,
     onSubmit,
 }: CreateReportModalProps) {
-    const handleSubmit = async (data: FormData) => {
+    const handleSubmit = async (data: CreateReportPayload) => {
         await onSubmit(data);
         onClose();
     };
@@ -21,7 +24,7 @@ export function CreateReportModal({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title="COMPILE NEW REPORT"
+            title="CREATE NEW REPORT"
             description="Enter report details and attach necessary data."
             className="max-w-2xl bg-black border border-gray-800 text-white"
         >
