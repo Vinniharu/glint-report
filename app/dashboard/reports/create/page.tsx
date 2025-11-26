@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/api";
+import { api, CreateReportPayload } from "@/lib/api";
 import { ReportForm } from "../../_components/ReportForm";
 import { Geist_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -11,7 +11,7 @@ const geistMono = Geist_Mono({ subsets: ["latin"] });
 export default function CreateReportPage() {
     const router = useRouter();
 
-    const handleSubmit = async (data: FormData) => {
+    const handleSubmit = async (data: CreateReportPayload) => {
         await api.reports.create(data);
         router.push("/dashboard/reports");
     };

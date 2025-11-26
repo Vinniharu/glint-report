@@ -21,7 +21,7 @@ const defaultData: CreateReportPayload = {
     title: "",
     body: "",
     content: [],
-    attachments: [],
+    attachments: []
 };
 
 export function ReportForm({ onSubmit, initialData = defaultData, onCancel }: ReportFormProps) {
