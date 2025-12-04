@@ -98,35 +98,35 @@ export function ReportForm({ onSubmit, initialData = defaultData, onCancel }: Re
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
                 <div className="space-y-2">
-                    <label className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}>Title</label>
+                    <label className={cn("text-xs uppercase tracking-widest text-(--theme-muted)", geistMono.className)}>Title</label>
                     <Input
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
                         required
                         placeholder="Weekly Platform Update"
-                        className="bg-black border-gray-800 text-white placeholder:text-gray-700 focus-visible:ring-blue-500/50 focus-visible:border-blue-500"
+                        className="bg-(--theme-background) border-(--theme-border) text-(--theme-foreground) placeholder:text-(--theme-muted) focus-visible:ring-blue-500/50 focus-visible:border-blue-500"
                     />
                 </div>
                 <div className="space-y-2">
-                    <label className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}>Summary</label>
+                    <label className={cn("text-xs uppercase tracking-widest text-(--theme-muted)", geistMono.className)}>Summary</label>
                     <Input
                         name="body"
                         value={formData.body}
                         onChange={handleChange}
                         placeholder="Short plaintext summary."
-                        className="bg-black border-gray-800 text-white placeholder:text-gray-700 focus-visible:ring-blue-500/50 focus-visible:border-blue-500"
+                        className="bg-(--theme-background) border-(--theme-border) text-(--theme-foreground) placeholder:text-(--theme-muted) focus-visible:ring-blue-500/50 focus-visible:border-blue-500"
                     />
                 </div>
             </div>
 
             {/* Content Builder */}
-            <div className="space-y-2 border-t border-gray-800 pt-4">
-                <h3 className={cn("text-xs uppercase tracking-widest text-gray-500 mb-2", geistMono.className)}>Task List</h3>
+            <div className="space-y-2 border-t border-(--theme-border) pt-4">
+                <h3 className={cn("text-xs uppercase tracking-widest text-(--theme-muted) mb-2", geistMono.className)}>Task List</h3>
                 <div className="space-y-2">
                     {formData.content?.map((block, index) => (
-                        <div key={index} className="flex items-center justify-between bg-gray-900/50 border border-gray-800 p-2 rounded text-sm">
-                            <span className="truncate flex-1 mr-2 text-gray-300">
+                        <div key={index} className="flex items-center justify-between bg-(--theme-secondary) border border-(--theme-border) p-2 rounded text-sm">
+                            <span className="truncate flex-1 mr-2 text-(--theme-foreground)">
                                 {block.value?.markdown || JSON.stringify(block.value)}
                             </span>
                             <Button
@@ -146,26 +146,26 @@ export function ReportForm({ onSubmit, initialData = defaultData, onCancel }: Re
                         value={newContentText}
                         onChange={(e) => setNewContentText(e.target.value)}
                         placeholder="Add text content..."
-                        className="flex-1 bg-black border-gray-800 text-white placeholder:text-gray-700"
+                        className="flex-1 bg-(--theme-background) border-(--theme-border) text-(--theme-foreground) placeholder:text-(--theme-muted)"
                     />
-                    <Button type="button" variant="secondary" onClick={addContentBlock} className="bg-white text-black hover:bg-gray-200">
+                    <Button type="button" variant="secondary" onClick={addContentBlock} className="bg-(--theme-foreground) text-(--theme-background) hover:opacity-90">
                         Add Task
                     </Button>
                 </div>
             </div>
 
             {/* File Upload Section */}
-            <div className="space-y-2 border-t border-gray-800 pt-4">
-                <h3 className={cn("text-xs uppercase tracking-widest text-gray-500 mb-2", geistMono.className)}>Attachments</h3>
+            <div className="space-y-2 border-t border-(--theme-border) pt-4">
+                <h3 className={cn("text-xs uppercase tracking-widest text-(--theme-muted) mb-2", geistMono.className)}>Attachments</h3>
                 <div className="space-y-2">
                     {formData.attachments?.map((attachment, index) => (
-                        <div key={index} className="flex items-center justify-between bg-gray-900/50 border border-gray-800 p-2 rounded text-sm">
+                        <div key={index} className="flex items-center justify-between bg-(--theme-secondary) border border-(--theme-border) p-2 rounded text-sm">
                             <div className="flex flex-col flex-1 min-w-0">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xs text-gray-500 uppercase">{attachment.type}</span>
-                                    <span className="font-medium text-gray-300 truncate">{attachment.name}</span>
+                                    <span className="text-xs text-(--theme-muted) uppercase">{attachment.type}</span>
+                                    <span className="font-medium text-(--theme-foreground) truncate">{attachment.name}</span>
                                 </div>
-                                <span className="text-xs text-gray-500 truncate">{attachment.url}</span>
+                                <span className="text-xs text-(--theme-muted) truncate">{attachment.url}</span>
                             </div>
                             <Button
                                 type="button"
@@ -179,10 +179,10 @@ export function ReportForm({ onSubmit, initialData = defaultData, onCancel }: Re
                         </div>
                     ))}
                 </div>
-                <div className="space-y-2 p-3 border border-gray-800 rounded-md bg-gray-900/20">
+                <div className="space-y-2 p-3 border border-(--theme-border) rounded-md bg-(--theme-secondary)">
                     <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-1">
-                            <label className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}>Type</label>
+                            <label className={cn("text-xs uppercase tracking-widest text-(--theme-muted)", geistMono.className)}>Type</label>
                             <Select
                                 value={newAttachment.type}
                                 onChange={(e) => setNewAttachment({ ...newAttachment, type: e.target.value as ReportAttachment["type"] })}
@@ -193,33 +193,33 @@ export function ReportForm({ onSubmit, initialData = defaultData, onCancel }: Re
                                     { label: "Link", value: "link" },
                                     { label: "Attachment", value: "attachment" },
                                 ]}
-                                className="bg-black border-gray-800 text-white text-sm"
+                                className="bg-(--theme-background) border-(--theme-border) text-(--theme-foreground) text-sm"
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}>Name</label>
+                            <label className={cn("text-xs uppercase tracking-widest text-(--theme-muted)", geistMono.className)}>Name</label>
                             <Input
                                 value={newAttachment.name}
                                 onChange={(e) => setNewAttachment({ ...newAttachment, name: e.target.value })}
                                 placeholder="Chart Q4"
-                                className="bg-black border-gray-800 text-white placeholder:text-gray-700 text-sm"
+                                className="bg-(--theme-background) border-(--theme-border) text-(--theme-foreground) placeholder:text-(--theme-muted) text-sm"
                             />
                         </div>
                     </div>
                     <div className="space-y-1">
-                        <label className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}>URL</label>
+                        <label className={cn("text-xs uppercase tracking-widest text-(--theme-muted)", geistMono.className)}>URL</label>
                         <Input
                             value={newAttachment.url}
                             onChange={(e) => setNewAttachment({ ...newAttachment, url: e.target.value })}
                             placeholder="https://example.com/file.pdf"
-                            className="bg-black border-gray-800 text-white placeholder:text-gray-700 text-sm"
+                            className="bg-(--theme-background) border-(--theme-border) text-(--theme-foreground) placeholder:text-(--theme-muted) text-sm"
                         />
                     </div>
                     <Button
                         type="button"
                         variant="secondary"
                         onClick={addAttachment}
-                        className="w-full bg-white text-black hover:bg-gray-200"
+                        className="w-full bg-(--theme-foreground) text-(--theme-background) hover:opacity-90"
                     >
                         <Plus className="mr-2 h-4 w-4" />
                         Add Attachment
@@ -234,13 +234,13 @@ export function ReportForm({ onSubmit, initialData = defaultData, onCancel }: Re
                 </div>
             )}
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+            <div className="flex justify-end gap-3 pt-4 border-t border-(--theme-border)">
                 {onCancel && (
-                    <Button type="button" variant="ghost" onClick={onCancel} className="text-gray-400 hover:text-white hover:bg-gray-900">
+                    <Button type="button" variant="ghost" onClick={onCancel} className="text-(--theme-muted) hover:text-(--theme-foreground) hover:bg-(--theme-secondary)">
                         Cancel
                     </Button>
                 )}
-                <Button type="submit" disabled={isSubmitting} className="bg-white text-black hover:bg-gray-200">
+                <Button type="submit" disabled={isSubmitting} className="bg-(--theme-foreground) text-(--theme-background) hover:opacity-90">
                     {isSubmitting ? "PROCESSING..." : "SUBMIT REPORT"}
                 </Button>
             </div>

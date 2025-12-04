@@ -69,12 +69,12 @@ function getStatusText(status: string) {
 
 export function ReportList({ reports, isLoading, onView, onStatusUpdate, userRole }: ReportListProps) {
     if (isLoading) {
-        return <div className="p-8 text-center text-gray-500 animate-pulse">LOADING SYSTEM DATA...</div>;
+        return <div className="p-8 text-center text-(--theme-muted) animate-pulse">LOADING SYSTEM DATA...</div>;
     }
 
     if (reports.length === 0) {
         return (
-            <div className="p-8 text-center text-gray-500 border border-dashed border-gray-800 rounded-md bg-gray-900/50">
+            <div className="p-8 text-center text-(--theme-muted) border border-dashed border-(--theme-border) rounded-md bg-(--theme-secondary)">
                 NO REPORTS FOUND IN DATABASE.
             </div>
         );
@@ -95,22 +95,22 @@ export function ReportList({ reports, isLoading, onView, onStatusUpdate, userRol
     };
 
     return (
-        <div className="border border-gray-800 rounded-md overflow-hidden">
-            <Table className="bg-black">
-                <TableHeader className="bg-gray-900/50">
-                    <TableRow className="border-gray-800 hover:bg-transparent">
-                        <TableHead className={cn("text-gray-400 uppercase text-xs tracking-wider", geistMono.className)}>Title</TableHead>
-                        <TableHead className={cn("text-gray-400 uppercase text-xs tracking-wider", geistMono.className)}>Status</TableHead>
-                        <TableHead className={cn("text-gray-400 uppercase text-xs tracking-wider", geistMono.className)}>Submitted At</TableHead>
-                        <TableHead className={cn("text-gray-400 uppercase text-xs tracking-wider", geistMono.className)}>Updated At</TableHead>
-                        <TableHead className={cn("text-gray-400 uppercase text-xs tracking-wider text-center", geistMono.className)}>Attachments</TableHead>
-                        <TableHead className={cn("text-gray-400 uppercase text-xs tracking-wider text-right", geistMono.className)}>Actions</TableHead>
+        <div className="border border-(--theme-border) rounded-md overflow-hidden">
+            <Table className="bg-(--theme-background)">
+                <TableHeader className="bg-(--theme-secondary)">
+                    <TableRow className="border-(--theme-border) hover:bg-transparent">
+                        <TableHead className={cn("text-(--theme-muted) uppercase text-xs tracking-wider", geistMono.className)}>Title</TableHead>
+                        <TableHead className={cn("text-(--theme-muted) uppercase text-xs tracking-wider", geistMono.className)}>Status</TableHead>
+                        <TableHead className={cn("text-(--theme-muted) uppercase text-xs tracking-wider", geistMono.className)}>Submitted At</TableHead>
+                        <TableHead className={cn("text-(--theme-muted) uppercase text-xs tracking-wider", geistMono.className)}>Updated At</TableHead>
+                        <TableHead className={cn("text-(--theme-muted) uppercase text-xs tracking-wider text-center", geistMono.className)}>Attachments</TableHead>
+                        <TableHead className={cn("text-(--theme-muted) uppercase text-xs tracking-wider text-right", geistMono.className)}>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {reports.map((report) => (
-                        <TableRow key={report.id} className="border-gray-800 hover:bg-gray-900/30 transition-colors">
-                            <TableCell className="font-medium text-white">{report.title}</TableCell>
+                        <TableRow key={report.id} className="border-(--theme-border) hover:bg-(--theme-secondary) transition-colors">
+                            <TableCell className="font-medium text-(--theme-foreground)">{report.title}</TableCell>
                             <TableCell>
                                 <span className={cn(
                                     "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border uppercase tracking-wide",
@@ -120,22 +120,22 @@ export function ReportList({ reports, isLoading, onView, onStatusUpdate, userRol
                                     {getStatusText(report.status)}
                                 </span>
                             </TableCell>
-                            <TableCell className="text-gray-500 font-mono text-xs">
+                            <TableCell className="text-(--theme-muted) font-mono text-xs">
                                 {report.submitted_at
                                     ? new Date(report.submitted_at).toLocaleString()
                                     : "Not submitted"}
                             </TableCell>
-                            <TableCell className="text-gray-500 font-mono text-xs">
+                            <TableCell className="text-(--theme-muted) font-mono text-xs">
                                 {new Date(report.updated_at).toLocaleString()}
                             </TableCell>
                             <TableCell className="text-center">
                                 {report.attachments && report.attachments.length > 0 ? (
-                                    <div className="inline-flex items-center gap-1 text-gray-400">
+                                    <div className="inline-flex items-center gap-1 text-(--theme-muted)">
                                         <Paperclip className="h-4 w-4" />
                                         <span className="text-xs font-mono">{report.attachments.length}</span>
                                     </div>
                                 ) : (
-                                    <span className="text-gray-600 text-xs">—</span>
+                                    <span className="text-(--theme-muted) text-xs opacity-50">—</span>
                                 )}
                             </TableCell>
                             <TableCell className="text-right">

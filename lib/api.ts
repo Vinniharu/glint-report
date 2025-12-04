@@ -8,6 +8,7 @@ export interface User {
     phone: string;
     username: string;
     role: UserRole;
+    subsidiary?: string; // Added for theming
     created_at: string;
 }
 

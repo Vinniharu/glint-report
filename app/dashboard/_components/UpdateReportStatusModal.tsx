@@ -78,20 +78,20 @@ export function UpdateReportStatusModal({ isOpen, onClose, report, onSubmit, use
             onClose={onClose}
             title={modalTitle}
             description={`${roleLabel} review for "${report.title}".`}
-            className="max-w-md bg-black border border-gray-800 text-white"
+            className="max-w-md bg-(--theme-background) border border-(--theme-border) text-(--theme-foreground)"
         >
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                    <label className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}>
+                    <label className={cn("text-xs uppercase tracking-widest text-(--theme-muted)", geistMono.className)}>
                         Current Status
                     </label>
-                    <div className="p-3 bg-gray-900/50 border border-gray-800 rounded-md">
-                        <span className="text-white font-mono text-sm uppercase">{report.status}</span>
+                    <div className="p-3 bg-(--theme-secondary) border border-(--theme-border) rounded-md">
+                        <span className="text-(--theme-foreground) font-mono text-sm uppercase">{report.status}</span>
                     </div>
                 </div>
 
                 <div className="space-y-2">
-                    <label className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}>
+                    <label className={cn("text-xs uppercase tracking-widest text-(--theme-muted)", geistMono.className)}>
                         Action
                     </label>
                     <Select
@@ -102,13 +102,13 @@ export function UpdateReportStatusModal({ isOpen, onClose, report, onSubmit, use
                             { label: "Request Changes", value: "request_changes" },
                             { label: "Needs Revision", value: "needs_revision" },
                         ]}
-                        className="bg-black border-gray-800 text-white"
+                        className="bg-(--theme-background) border-(--theme-border) text-(--theme-foreground)"
                     />
                 </div>
 
                 {(action === "request_changes" || action === "needs_revision") && (
                     <div className="space-y-2">
-                        <label className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}>
+                        <label className={cn("text-xs uppercase tracking-widest text-(--theme-muted)", geistMono.className)}>
                             Comment <span className="text-red-400">*</span>
                         </label>
                         <textarea
@@ -116,7 +116,7 @@ export function UpdateReportStatusModal({ isOpen, onClose, report, onSubmit, use
                             onChange={(e) => setComment(e.target.value)}
                             placeholder="Provide detailed feedback..."
                             rows={4}
-                            className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                            className="w-full px-3 py-2 bg-(--theme-background) border border-(--theme-border) rounded-md text-(--theme-foreground) placeholder-(--theme-muted) focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                         />
                     </div>
                 )}
@@ -128,11 +128,11 @@ export function UpdateReportStatusModal({ isOpen, onClose, report, onSubmit, use
                     </div>
                 )}
 
-                <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
-                    <Button type="button" variant="ghost" onClick={onClose} className="text-gray-400 hover:text-white hover:bg-gray-900">
+                <div className="flex justify-end gap-3 pt-4 border-t border-(--theme-border)">
+                    <Button type="button" variant="ghost" onClick={onClose} className="text-(--theme-muted) hover:text-(--theme-foreground) hover:bg-(--theme-secondary)">
                         Cancel
                     </Button>
-                    <Button type="submit" disabled={isSubmitting} className="bg-white text-black hover:bg-gray-200">
+                    <Button type="submit" disabled={isSubmitting} className="bg-(--theme-foreground) text-(--theme-background) hover:opacity-90">
                         {isSubmitting ? "SUBMITTING..." : "SUBMIT DECISION"}
                     </Button>
                 </div>

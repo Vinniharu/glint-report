@@ -9,10 +9,13 @@ import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 
+import { useTheme } from "@/components/ThemeProvider";
+
 const geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setTheme } = useTheme();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +29,13 @@ export default function LoginPage() {
     try {
       const user = await api.auth.login({ identifier, password });
       sessionStorage.setItem("token", user.token);
-      console.log(user);
+      // Store user info for theming
+      if (user.user) {
+        sessionStorage.setItem("user", JSON.stringify({...user.user }));
+        // Trigger theme update via context
+        setTheme((user.user as any).subsidiary);
+        // setTheme("greenenergy");
+      }
       toast.success("Welcome My Nigga");
       router.push("/dashboard");
     } catch (err) {
@@ -37,26 +46,38 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-black text-white selection:bg-blue-500/30">
-      {/* Background Grid Effect */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#232323_1px,transparent_1px),linear-gradient(to_bottom,#232323_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
-
-      <div className="relative w-full max-w-md p-8">
-        <div className="mb-8 text-center">
-          <h1 className={cn("text-3xl font-bold tracking-tighter mb-2", geistMono.className)}>
-            GLINT REPORT SYSTEM
-          </h1>
-          <p className="text-gray-500 text-sm">Enter credentials to authenticate.</p>
+    <div className="min-h-screen w-full grid lg:grid-cols-2 bg-white text-black">
+      {/* Left Side - Branding/Logo */}
+      <div className="relative hidden lg:flex flex-col items-center justify-center p-10 bg-blue-600">
+        <div className="absolute inset-0 pointer-events-none opacity-20" />
+        <div className="relative z-10 flex flex-col items-center">
+          <img
+            src="/eib.png"
+            alt="Company Logo"
+            className="h-84 w-84 object-contain"
+          />
         </div>
+      </div>
 
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div className="space-y-4">
+      {/* Right Side - Login Form */}
+      <div className="flex items-center justify-center p-8 lg:p-16 relative">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center lg:text-left">
+            <h2 className={cn("text-2xl font-bold tracking-tight", geistMono.className)}>
+              Welcome Back
+            </h2>
+            <p className="text-black mt-2">
+              Enter your credentials to access your account.
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <label
                 htmlFor="identifier"
-                className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}
+                className={cn("text-xs uppercase tracking-widest text-black", geistMono.className)}
               >
-                Identifier
+                Email or Username
               </label>
               <Input
                 id="identifier"
@@ -64,15 +85,14 @@ export default function LoginPage() {
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 required
-                placeholder="username or email"
-                className="bg-black border-gray-800 text-white placeholder:text-gray-700 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all"
+                placeholder="name@example.com"
+                className="border-gray-200 text-black placeholder:text-black focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all h-11"
               />
             </div>
-
             <div className="space-y-2">
               <label
                 htmlFor="password"
-                className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}
+                className={cn("text-xs uppercase tracking-widest text-black", geistMono.className)}
               >
                 Password
               </label>
@@ -83,40 +103,40 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
-                className="bg-black border-gray-800 text-white placeholder:text-gray-700 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all"
+                className="border-gray-200 text-black placeholder:text-black focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all h-11"
               />
             </div>
-          </div>
 
-          {error && (
-            <div className="p-3 border border-red-900/50 bg-red-900/10 text-red-400 text-sm rounded-md">
-              <span className="font-mono mr-2">[ERROR]</span>
-              {error}
-            </div>
-          )}
-
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-white text-black hover:bg-gray-200 font-medium h-11 rounded-none border border-transparent hover:border-gray-400 transition-all"
-          >
-            {isLoading ? (
-              <span className={geistMono.className}>AUTHENTICATING...</span>
-            ) : (
-              <span className={geistMono.className}>INITIALIZE SESSION</span>
+            {error && (
+              <div className="p-3 border border-red-900/50 bg-red-900/10 text-red-400 text-sm rounded-md">
+                <span className="font-mono mr-2">[ERROR]</span>
+                {error}
+              </div>
             )}
-          </Button>
-        </form>
 
-        <div className="text-center mt-8">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => router.push("/signup")}
-            className="text-gray-500 hover:text-white hover:bg-transparent"
-          >
-            <span className={cn("text-xs", geistMono.className)}>DON'T HAVE AN ACCOUNT? SIGNUP</span>
-          </Button>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-blue-600 text-white hover:opacity-90 font-medium h-11 rounded-none border border-transparent hover:border-blue-600 transition-all"
+            >
+              {isLoading ? (
+                <span className={geistMono.className}>AUTHENTICATING...</span>
+              ) : (
+                <span className={geistMono.className}>ACCESS SYSTEM</span>
+              )}
+            </Button>
+
+            <div className="text-center">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => router.push("/signup")}
+                className="text-black hover:text-black hover:bg-transparent"
+              >
+                <span className={cn("text-xs", geistMono.className)}>NEW USER? REGISTER HERE</span>
+              </Button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

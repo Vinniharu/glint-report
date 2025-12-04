@@ -9,12 +9,17 @@ import { Geist_Mono } from "next/font/google";
 import { Button } from "@/components/ui/Button";
 import { api } from "@/lib/api";
 
+import { useTheme } from "@/components/ThemeProvider";
+import { SUBSIDIARIES } from "@/lib/subsidiaryColors";
+
 const geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
+    const { theme } = useTheme();
     const [userRole, setUserRole] = useState<string | null>(null);
+    const [subsidiary, setSubsidiary] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchUserRole = async () => {
@@ -23,6 +28,14 @@ export function Sidebar() {
                 if (token) {
                     const userData = await api.auth.me(token);
                     setUserRole(userData.role as string);
+                    // Also get subsidiary from user data if available, or rely on what's in session storage
+                    // The theme provider handles the visual theme, but we need the name/logo here.
+                    // We can try to match the current theme back to a subsidiary, or just read the user object again.
+                    const userStr = sessionStorage.getItem("user");
+                    if (userStr) {
+                        const user = JSON.parse(userStr);
+                        setSubsidiary(user.subsidiary);
+                    }
                 }
             } catch (error) {
                 console.error("Failed to fetch user role:", error);
@@ -31,8 +44,11 @@ export function Sidebar() {
         fetchUserRole();
     }, []);
 
+    const currentSubsidiary = SUBSIDIARIES.find(s => s.id === (subsidiary?.toLowerCase().replace(/\s+/g, "") || "default")) || SUBSIDIARIES[0];
+
     const handleLogout = () => {
         sessionStorage.removeItem("token");
+        sessionStorage.removeItem("user");
         router.push("/");
     };
 
@@ -57,12 +73,19 @@ export function Sidebar() {
     ];
 
     return (
-        <div className="w-64 border-r border-gray-800 bg-black flex flex-col h-full">
-            <div className="p-6 border-b border-gray-800">
-                <h1 className={cn("text-xl font-bold tracking-tighter text-white", geistMono.className)}>
-                    GLINT REPORT
-                </h1>
-                <p className="text-xs text-gray-500 mt-1">SYSTEM V1.0</p>
+        <div className="w-64 border-r border-(--theme-border) bg-(--theme-background) flex flex-col h-full">
+            <div className="p-6 border-b border-(--theme-border)">
+                <div className="flex items-center gap-3 mb-2">
+                    <img
+                        src={currentSubsidiary.logo}
+                        alt={`${currentSubsidiary.name} Logo`}
+                        className="h-8 w-8 object-contain"
+                    />
+                    <h1 className={cn("text-lg font-bold tracking-tighter text-(--theme-foreground)", geistMono.className)}>
+                        {currentSubsidiary.name.toUpperCase()}
+                    </h1>
+                </div>
+                <p className="text-xs text-(--theme-muted)">REPORT SYSTEM V1.0</p>
             </div>
 
             <nav className="flex-1 p-4 space-y-2">
@@ -77,8 +100,8 @@ export function Sidebar() {
                             className={cn(
                                 "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
                                 isActive
-                                    ? "bg-white text-black"
-                                    : "text-gray-400 hover:text-white hover:bg-gray-900"
+                                    ? "bg-(--theme-foreground) text-(--theme-background)"
+                                    : "text-(--theme-muted) hover:text-(--theme-foreground) hover:bg-(--theme-secondary)"
                             )}
                         >
                             <Icon className="h-4 w-4" />
@@ -88,7 +111,7 @@ export function Sidebar() {
                 })}
             </nav>
 
-            <div className="p-4 border-t border-gray-800">
+            <div className="p-4 border-t border-(--theme-border)">
                 <Button
                     variant="ghost"
                     onClick={handleLogout}

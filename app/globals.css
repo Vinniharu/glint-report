@@ -3,6 +3,14 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Default Theme Variables (will be overridden by JS) */
+  --theme-background: #ffffff;
+  --theme-foreground: #0a0a0a;
+  --theme-primary: #2563eb;
+  --theme-secondary: #eff6ff;
+  --theme-border: #e5e5e5;
+  --theme-muted: #737373;
 }
 
 @theme inline {

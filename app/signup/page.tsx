@@ -46,164 +46,178 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-black text-white selection:bg-blue-500/30 py-10">
-            {/* Background Grid Effect */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#232323_1px,transparent_1px),linear-gradient(to_bottom,#232323_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
-
-            <div className="relative w-full max-w-lg p-8">
-                <div className="mb-8 text-center">
-                    <h1 className={cn("text-3xl font-bold tracking-tighter mb-2", geistMono.className)}>
-                        NEW DEVELOPER REGISTRATION
-                    </h1>
-                    <p className="text-gray-500 text-sm">Create credentials to access the system.</p>
+        <div className="min-h-screen w-full grid lg:grid-cols-2 bg-white text-black">
+            {/* Left Side - Branding/Logo */}
+            <div className="hidden lg:flex flex-col items-center justify-center p-10 bg-blue-600 h-screen sticky top-0">
+                <div className="absolute inset-0 pointer-events-none opacity-20" />
+                <div className="relative z-10 flex flex-col items-center">
+                    <img
+                        src="/eib.png"
+                        alt="Company Logo"
+                        className="h-84 w-84 object-contain"
+                    />
                 </div>
+            </div>
 
-                <form onSubmit={handleSignup} className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-4">
+            {/* Right Side - Registration Form (Scrollable) */}
+            <div className="flex flex-col items-center justify-center p-8 lg:p-16 relative overflow-y-auto h-screen">
+                <div className="w-full max-w-lg space-y-8 py-10">
+                    <div className="text-center lg:text-left">
+                        <h2 className={cn("text-2xl font-bold tracking-tight", geistMono.className)}>
+                            Create Account
+                        </h2>
+                        <p className="text-black mt-2">
+                            Enter your details to register for access.
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleSignup} className="space-y-6">
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="first_name"
+                                    className={cn("text-xs uppercase tracking-widest text-black", geistMono.className)}
+                                >
+                                    First Name
+                                </label>
+                                <Input
+                                    id="first_name"
+                                    name="first_name"
+                                    type="text"
+                                    value={formData.first_name}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Ada"
+                                    className="border-gray-200 text-black placeholder:text-black focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all h-11"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="last_name"
+                                    className={cn("text-xs uppercase tracking-widest text-black", geistMono.className)}
+                                >
+                                    Last Name
+                                </label>
+                                <Input
+                                    id="last_name"
+                                    name="last_name"
+                                    type="text"
+                                    value={formData.last_name}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Lovelace"
+                                    className="border-gray-200 text-black placeholder:text-black focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all h-11"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="email"
+                                    className={cn("text-xs uppercase tracking-widest text-black", geistMono.className)}
+                                >
+                                    Email
+                                </label>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="ada@example.com"
+                                    className="border-gray-200 text-black placeholder:text-black focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all h-11"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="phone"
+                                    className={cn("text-xs uppercase tracking-widest text-black", geistMono.className)}
+                                >
+                                    Phone
+                                </label>
+                                <Input
+                                    id="phone"
+                                    name="phone"
+                                    type="text"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="+15556667777"
+                                    className="border-gray-200 text-black placeholder:text-black focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all h-11"
+                                />
+                            </div>
+                        </div>
+
                         <div className="space-y-2">
                             <label
-                                htmlFor="first_name"
-                                className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}
+                                htmlFor="username"
+                                className={cn("text-xs uppercase tracking-widest text-black", geistMono.className)}
                             >
-                                First Name
+                                Username (Optional)
                             </label>
                             <Input
-                                id="first_name"
-                                name="first_name"
+                                id="username"
+                                name="username"
                                 type="text"
-                                value={formData.first_name}
+                                value={formData.username}
                                 onChange={handleChange}
-                                required
-                                placeholder="Ada"
-                                className="bg-black border-gray-800 text-white placeholder:text-gray-700 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all"
+                                placeholder="ada.l"
+                                className="border-gray-200 text-black placeholder:text-black focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all h-11"
                             />
                         </div>
+
                         <div className="space-y-2">
                             <label
-                                htmlFor="last_name"
-                                className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}
+                                htmlFor="password"
+                                className={cn("text-xs uppercase tracking-widest text-black", geistMono.className)}
                             >
-                                Last Name
+                                Password
                             </label>
                             <Input
-                                id="last_name"
-                                name="last_name"
-                                type="text"
-                                value={formData.last_name}
+                                id="password"
+                                name="password"
+                                type="password"
+                                value={formData.password}
                                 onChange={handleChange}
                                 required
-                                placeholder="Lovelace"
-                                className="bg-black border-gray-800 text-white placeholder:text-gray-700 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all"
+                                placeholder="••••••••"
+                                className="border-gray-200 text-black placeholder:text-black focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all h-11"
                             />
                         </div>
-                    </div>
 
-                    <div className="grid md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="email"
-                                className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}
-                            >
-                                Email
-                            </label>
-                            <Input
-                                id="email"
-                                name="email"
-                                type="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                                placeholder="ada@example.com"
-                                className="bg-black border-gray-800 text-white placeholder:text-gray-700 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="phone"
-                                className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}
-                            >
-                                Phone
-                            </label>
-                            <Input
-                                id="phone"
-                                name="phone"
-                                type="text"
-                                value={formData.phone}
-                                onChange={handleChange}
-                                required
-                                placeholder="+15556667777"
-                                className="bg-black border-gray-800 text-white placeholder:text-gray-700 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label
-                            htmlFor="username"
-                            className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}
-                        >
-                            Username (Optional)
-                        </label>
-                        <Input
-                            id="username"
-                            name="username"
-                            type="text"
-                            value={formData.username}
-                            onChange={handleChange}
-                            placeholder="ada.l"
-                            className="bg-black border-gray-800 text-white placeholder:text-gray-700 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <label
-                            htmlFor="password"
-                            className={cn("text-xs uppercase tracking-widest text-gray-500", geistMono.className)}
-                        >
-                            Password
-                        </label>
-                        <Input
-                            id="password"
-                            name="password"
-                            type="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                            placeholder="••••••••"
-                            className="bg-black border-gray-800 text-white placeholder:text-gray-700 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 transition-all"
-                        />
-                    </div>
-
-                    {error && (
-                        <div className="p-3 border border-red-900/50 bg-red-900/10 text-red-400 text-sm rounded-md">
-                            <span className="font-mono mr-2">[ERROR]</span>
-                            {error}
-                        </div>
-                    )}
-
-                    <Button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full bg-white text-black hover:bg-gray-200 font-medium h-11 rounded-none border border-transparent hover:border-gray-400 transition-all"
-                    >
-                        {isLoading ? (
-                            <span className={geistMono.className}>REGISTERING...</span>
-                        ) : (
-                            <span className={geistMono.className}>CONFIRM REGISTRATION</span>
+                        {error && (
+                            <div className="p-3 border border-red-900/50 bg-red-900/10 text-red-400 text-sm rounded-md">
+                                <span className="font-mono mr-2">[ERROR]</span>
+                                {error}
+                            </div>
                         )}
-                    </Button>
 
-                    <div className="text-center">
                         <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={() => router.push("/")}
-                            className="text-gray-500 hover:text-white hover:bg-transparent"
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full bg-blue-600 text-white hover:opacity-90 font-medium h-11 rounded-none border border-transparent hover:border-blue-600 transition-all"
                         >
-                            <span className={cn("text-xs", geistMono.className)}>ALREADY HAVE AN ACCOUNT? LOGIN</span>
+                            {isLoading ? (
+                                <span className={geistMono.className}>REGISTERING...</span>
+                            ) : (
+                                <span className={geistMono.className}>CONFIRM REGISTRATION</span>
+                            )}
                         </Button>
-                    </div>
-                </form>
+
+                        <div className="text-center">
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                onClick={() => router.push("/")}
+                                className="text-black hover:text-black hover:bg-transparent"
+                            >
+                                <span className={cn("text-xs", geistMono.className)}>ALREADY HAVE AN ACCOUNT? LOGIN</span>
+                            </Button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );
