@@ -36,7 +36,7 @@ export default function LoginPage() {
         setTheme((user.user as any).subsidiary);
         // setTheme("greenenergy");
       }
-      toast.success("Welcome My Nigga");
+      toast.success("Welcome User");
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
